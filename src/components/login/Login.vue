@@ -3,10 +3,11 @@
     <el-col :span="8">
       <el-form :model="loginForm" :rules="rules" ref="loginForm" class="demo-ruleForm">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="loginForm.username"></el-input>
+          <el-input placeholder="请输入用户名" v-model="loginForm.username"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="loginForm.password"></el-input>
+          <el-input placeholder="请输入密码" v-model="loginForm.password" show-password></el-input>
+          <!-- <el-input v-model="loginForm.password"></el-input> -->
         </el-form-item>
 
         <el-form-item>
@@ -26,8 +27,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "",
-        password: ""
+        username: "admin",
+        password: "123456"
       },
       rules: {
         username: [
@@ -55,7 +56,7 @@ export default {
             if (res.data.meta.status == 200) {
               localStorage.setItem("token", res.data.data.token);
               this.$message({
-                message: "恭喜你，这是一条成功消息",
+                message: "登陆成功",
                 type: "success",
                 duration: 1000
               });

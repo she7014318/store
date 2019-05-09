@@ -15,20 +15,81 @@
         <el-col :span="8" class="right_col">
           <div class="grid-content bg-purple">
             恭喜上海前端36期月薪2W
-            <a href="#">退出</a>
+            <a href="javascript:;" @click="loginout">退出</a>
           </div>
         </el-col>
       </el-row>
     </el-header>
     <el-container>
-      <el-aside width="200px">Aside</el-aside>
-      <el-main>Main</el-main>
+      <el-aside width="200px">
+        <el-menu
+          :router="true"
+          :default-active="$route.path"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+        >
+          <el-submenu :index="item1.id+''" v-for="item1 in menus" :key="item1.id">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>{{item1.authName}}</span>
+            </template>
+            <el-menu-item
+              :index="'/'+item2.path"
+              v-for="item2 in item1.children"
+              :key="item2.id"
+            >{{item2.authName}}</el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      menus: []
+    }
+  },
+  created () {
+    this.loadLeftRight()
+  },
+  methods: {
+    // 退出
+    async loginout () {
+      try {
+        await this.$confirm('此操作将退出该账户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        localStorage.removeItem('token')
+        this.$router.push('/login')
+        this.$message({
+          type: 'success',
+          message: '退出成功!',
+          duration: '800'
+        })
+      } catch (error) {
+        this.$message({
+          type: 'info',
+          message: '已取消退出',
+          duration: '800'
+        })
+      }
+    },
+    // 加载左侧
+    async loadLeftRight () {
+      let res = await this.$axios.get(`menus`)
+      this.menus = res.data.data
+    }
+  }
+}
 </script>
 
 <style scoped>
